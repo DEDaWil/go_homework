@@ -34,9 +34,7 @@ func Unpack(input string) (string, error) {
 
 		if current.isDigit {
 			if prev.isLetter {
-				for i := 0; i < int(current.value-'0'); i++ {
-					sb.WriteRune(prev.value)
-				}
+				sb.WriteString(strings.Repeat(string(prev.value), int(current.value-'0')))
 			} else {
 				return "", ErrInvalidString
 			}
