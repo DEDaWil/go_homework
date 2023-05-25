@@ -9,9 +9,10 @@ import (
 var ErrInvalidString = errors.New("invalid string")
 
 type Symbol struct {
-	Value    rune
-	IsLetter bool
-	IsDigit  bool
+	value    rune
+	isLetter bool
+	isDigit  bool
+	isSlash  bool
 }
 
 func Unpack(input string) (string, error) {
@@ -19,24 +20,32 @@ func Unpack(input string) (string, error) {
 	var prev Symbol
 	for i, val := range input {
 		current := Symbol{
-			Value:    val,
-			IsLetter: unicode.IsLetter(val),
-			IsDigit:  unicode.IsDigit(val),
+			value:    val,
+			isLetter: unicode.IsLetter(val),
+			isDigit:  unicode.IsDigit(val),
+			isSlash:  val == []rune(`\`)[0],
 		}
 
-		if current.IsDigit {
-			if prev.IsLetter {
-				for i := 0; i < int(current.Value-'0'); i++ {
-					sb.WriteRune(prev.Value)
+		if prev.isSlash {
+			current.isLetter = true
+			current.isDigit = false
+			current.isSlash = false
+		}
+
+		if current.isDigit {
+			if prev.isLetter {
+				for i := 0; i < int(current.value-'0'); i++ {
+					sb.WriteRune(prev.value)
 				}
 			} else {
 				return "", ErrInvalidString
 			}
-		} else if prev.IsLetter {
-			sb.WriteRune(prev.Value)
+		} else if prev.isLetter {
+			sb.WriteRune(prev.value)
 		}
-		if i == len(input)-1 {
-			sb.WriteRune(current.Value)
+
+		if current.isLetter && i == len(input)-1 {
+			sb.WriteRune(current.value)
 		}
 
 		prev = current
