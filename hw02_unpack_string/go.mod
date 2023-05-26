@@ -1,4 +1,4 @@
-module github.com/DEDaWil/go_homework //hw02_unpack_string
+module github.com/DEDaWil/go_homework/hw02_unpack_string
 
 go 1.18
 
