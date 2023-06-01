@@ -21,7 +21,7 @@ func Top10(text string) []string {
 		mapWords[word]++
 	}
 
-	var sliceWords []KeyValue
+	sliceWords := make([]KeyValue, 0)
 	for key, word := range mapWords {
 		sliceWords = append(sliceWords, KeyValue{key: key, value: word})
 	}
